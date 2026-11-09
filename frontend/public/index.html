@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Full Stack Application</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Student Registration Form</h2>
+
+    <form id="studentForm">
+
+        <input
+            type="text"
+            name="name"
+            placeholder="Enter Name"
+            required
+        >
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            required
+        >
+
+        <input
+            type="text"
+            name="course"
+            placeholder="Enter Course"
+            required
+        >
+
+        <button type="submit">Submit</button>
+
+    </form>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+document.getElementById("studentForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    const data = Object.fromEntries(formData.entries());
+
+    const resultDiv = document.getElementById("result");
+
+    try {
+        const response = await fetch("/api/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        resultDiv.textContent = result.message ||
+            "Request failed";
+
+    } catch (error) {
+        resultDiv.textContent = "Something went wrong";
+    }
+});
+</script>
+
+</body>
+</html>
