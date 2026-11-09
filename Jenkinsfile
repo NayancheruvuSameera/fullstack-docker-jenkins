@@ -1,27 +1,25 @@
+
 pipeline {
     agent any
 
     triggers {
-        // Check GitHub for changes approximately every 5 minutes
         pollSCM('H/5 * * * *')
     }
 
     environment {
-        DOCKERHUB_USER = 'nayancheruvusameera'
         FRONTEND_IMAGE = 'nayancheruvusameera/fullstack-frontend:v1'
-        BACKEND_IMAGE  = 'nayancheruvusameera/fullstack-backend:v1'
+        BACKEND_IMAGE = 'nayancheruvusameera/fullstack-backend:v1'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code from GitHub'
                 checkout scm
             }
         }
 
-        stage('Check Docker') {
+        stage('Docker Check') {
             steps {
                 bat 'docker --version'
                 bat 'docker compose version'
@@ -31,12 +29,11 @@ pipeline {
 
         stage('Build Images') {
             steps {
-                echo 'Building frontend and backend images'
                 bat 'docker compose build'
             }
         }
 
-        stage('Docker Hub Login') {
+        stage('Login and Push Images') {
             steps {
                 withCredentials([
                     usernamePassword(
@@ -48,26 +45,26 @@ pipeline {
                     bat '''
                         @echo off
                         echo %DOCKERHUB_TOKEN%| docker login -u %DOCKERHUB_USER% --password-stdin
+                        if errorlevel 1 exit /b 1
+
+                        docker push %FRONTEND_IMAGE%
+                        if errorlevel 1 exit /b 1
+
+                        docker push %BACKEND_IMAGE%
+                        if errorlevel 1 exit /b 1
                     '''
                 }
             }
         }
 
-        stage('Push Images') {
-            steps {
-                bat 'docker push %FRONTEND_IMAGE%'
-                bat 'docker push %BACKEND_IMAGE%'
-            }
-        }
-
-        stage('Deploy Containers') {
+        stage('Deploy') {
             steps {
                 bat 'docker compose pull'
                 bat 'docker compose up -d --no-build --remove-orphans'
             }
         }
 
-        stage('Verify Deployment') {
+        stage('Verify') {
             steps {
                 bat 'docker compose ps'
             }
@@ -80,11 +77,12 @@ pipeline {
         }
 
         success {
-            echo 'Frontend and backend deployed successfully!'
+            echo 'Application deployed successfully!'
         }
 
         failure {
-            echo 'Pipeline failed. Check the Jenkins console output.'
+            echo 'Deployment failed. Check the Console Output.'
         }
     }
 }
+
