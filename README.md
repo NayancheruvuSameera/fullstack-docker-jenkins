@@ -406,7 +406,7 @@ Through this project, I gained practical experience in:
 
 Docker Hub: https://hub.docker.com/u/nayancheruvusameera
 
-GitHub: <YOUR_GITHUB_PROFILE_URL>
+GitHub: https://github.com/NayancheruvuSameera
 
 ---
 
