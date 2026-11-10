@@ -147,7 +147,7 @@ Install the following tools before running the project:
 ### Step 1: Clone the repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone <(https://github.com/NayancheruvuSameera/fullstack-docker-jenkins.git)>
 ```
 
 ### Step 2: Navigate to the project directory
@@ -283,7 +283,7 @@ Create a Jenkins Pipeline job with:
 
 - Pipeline Definition: Pipeline script from SCM
 - SCM: Git
-- Repository URL: Your GitHub repository
+- Repository URL: https://github.com/NayancheruvuSameera/fullstack-docker-jenkins.git
 - Branch: `*/main`
 - Script Path: `Jenkinsfile`
 
